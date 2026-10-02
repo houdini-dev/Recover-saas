@@ -35,7 +35,6 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [selected, setSelected] = useState<Customer | null>(null);
-  const [showAdd, setShowAdd] = useState(false);
   const [message, setMessage] = useState("");
 
   const filtered = useMemo(() => {
@@ -100,7 +99,7 @@ export default function Home() {
             <h1>Good morning 👋</h1>
             <p className="muted">Here is what needs your attention today.</p>
           </div>
-          <button className="primary" onClick={() => setShowAdd(true)}>+ Add customer</button>
+          <button className="primary" onClick={() => setShowModal(true)}>+ Add customer</button>
         </header>
 
         <section className="stats-grid">
@@ -198,7 +197,7 @@ export default function Home() {
         </div>
       )}
 
-      {showAdd && (
+      {showModal && (
         <div className="modal-backdrop" onClick={() => setShowModal(false)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-head"><div><p className="eyebrow">Quick add</p><h2>Add a customer</h2></div><button className="close" onClick={() => setShowModal(false)}>×</button></div>
