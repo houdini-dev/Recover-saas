@@ -78,6 +78,15 @@ export default function Home() {
     setCustomers((current) => current.map((c) => c.id === id ? { ...c, status: "Won" } : c));
   }
 
+  function markContacted(id: number) {
+    setCustomers((current) => current.map((c) => c.id === id ? { ...c, status: "Waiting", lastContact: "Today" } : c));
+    setSelected(null);
+  }
+
+  function scheduleFollowUp(id: number) {
+    setCustomers((current) => current.map((c) => c.id === id ? { ...c, status: "Follow-up due", lastContact: "Follow-up scheduled" } : c));
+  }
+
   return (
     <main className="app-shell">
       <aside className="sidebar">
@@ -89,9 +98,9 @@ export default function Home() {
           </div>
         </div>
         <nav>
-          <a className="nav-item active">Overview</a>
-          <a className="nav-item">Customers <span>{customers.length}</span></a>
-          <a className="nav-item">Follow-ups <span className="nav-alert">{followUps.length}</span></a>
+          <button className="nav-item active" onClick={() => setFilter("All")}>Overview</button>
+          <button className="nav-item" onClick={() => setFilter("All")}>Customers <span>{customers.length}</span></button>
+          <button className="nav-item" onClick={() => setFilter("Follow-up due")}>Follow-ups <span className="nav-alert">{followUps.length}</span></button>
           <a className="nav-item">Messages</a>
           <a className="nav-item">Analytics</a>
         </nav>
@@ -209,7 +218,9 @@ export default function Home() {
             <textarea value={message} onChange={(e) => setMessage(e.target.value)} />
             <div className="modal-actions">
               <button className="ghost" onClick={() => navigator.clipboard?.writeText(message)}>Copy message</button>
-              <a className="whatsapp" href={`https://wa.me/?text=${encodeURIComponent(message)}`} target="_blank" rel="noreferrer">Open WhatsApp ↗</a>
+              <button className="secondary" onClick={() => scheduleFollowUp(selected.id)}>Schedule follow-up</button>
+              <button className="primary" onClick={() => markContacted(selected.id)}>Mark contacted</button>
+              <a className="whatsapp" href={`https://wa.me/${selected.phone ? selected.phone.replace(/\\D/g, "") : ""}?text=${encodeURIComponent(message)}`} target="_blank" rel="noreferrer">Open WhatsApp ↗</a>
             </div>
           </div>
         </div>
