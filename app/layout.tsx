@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Recover — Customer Recovery",
   description: "Recover leads, reservations and repeat customers before they disappear.",
   applicationName: "Recover",
+  manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
     title: "Recover",
