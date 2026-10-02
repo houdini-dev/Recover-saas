@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type Status = "New lead" | "Follow-up due" | "Waiting" | "Won";
 
@@ -12,6 +12,8 @@ type Customer = {
   value: number;
   status: Status;
   lastContact: string;
+  phone?: string;
+  notes?: string;
 };
 
 const seedCustomers: Customer[] = [
