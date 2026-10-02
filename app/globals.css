@@ -72,3 +72,9 @@ textarea { width:100%; min-height:145px; resize:vertical; margin-top:16px; paddi
 .whatsapp { text-decoration:none; background:#168c55; color:#fff; padding:9px 13px; font-size:11px; font-weight:700; }
 @media(max-width:900px){ .sidebar{width:72px;padding:18px 10px}.brand div:not(.brand-mark),.nav-item:not(.active)::first-letter,.nav-item span,.plan-card,.profile div:not(.avatar),.profile button{display:none}.brand{padding:0 8px 28px}.nav-item{font-size:0;justify-content:center}.nav-item.active{font-size:0}.nav-item.active:before{content:"⌂";font-size:18px}.content{margin-left:72px;width:calc(100% - 72px);padding:28px 20px}.stats-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.topbar{gap:15px;align-items:center}.topbar h1{font-size:22px}.stats-grid{grid-template-columns:1fr 1fr}.stat-card strong{font-size:20px}.section-heading{align-items:flex-start;gap:12px;flex-direction:column}.toolbar{width:100%}.toolbar input{flex:1;width:auto}.attention-row .amount{display:none}.content{padding:22px 12px}.sidebar{width:58px}.content{margin-left:58px;width:calc(100% - 58px)}}
+
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px; }
+.form-grid label { display:grid; gap:6px; font-size:10px; font-weight:700; color:#626879; }
+.form-grid input,.form-grid select { width:100%; border:1px solid var(--line); background:#fafbfc; border-radius:8px; padding:10px; font-size:12px; color:var(--ink); outline:none; }
+.form-grid input:focus,.form-grid select:focus { border-color:#7778e8; box-shadow:0 0 0 3px rgba(91,92,226,.08); }
+@media(max-width:600px){ .form-grid{grid-template-columns:1fr;} }
