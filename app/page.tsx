@@ -34,6 +34,8 @@ export default function Home() {
   const [filter, setFilter] = useState<"All" | Status>("All");
   const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [form, setForm] = useState({ name: "", business: "", type: "Service" as Customer["type"], value: "", phone: "", notes: "" });
+  const [hydrated, setHydrated] = useState(false);
   const [selected, setSelected] = useState<Customer | null>(null);
   const [message, setMessage] = useState("");
 
@@ -45,6 +47,10 @@ export default function Home() {
     });
   }, [customers, filter, search]);
 
+  useEffect(() => { try { const saved = localStorage.getItem("recover-customers"); if (saved) setCustomers(JSON.parse(saved)); } catch {} finally { setHydrated(true); } }, []);
+
+  useEffect(() => { if (hydrated) localStorage.setItem("recover-customers", JSON.stringify(customers)); }, [customers, hydrated]);
+
   const followUps = customers.filter((c) => c.status === "Follow-up due");
   const pipeline = customers.reduce((sum, c) => sum + c.value, 0);
   const won = customers.filter((c) => c.status === "Won").reduce((sum, c) => sum + c.value, 0);
@@ -55,6 +61,16 @@ export default function Home() {
       `Hi ${customer.name.split(" ")[0]}, just checking in about your ${customer.type === "Restaurant" ? "reservation/request" : "request"}. Were you able to take a look? I'm happy to help if you have any questions.`
     );
   }
+
+  function addCustomer(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!form.name.trim() || !form.business.trim()) return;
+    setCustomers((current) => [{ id: Date.now(), name: form.name.trim(), business: form.business.trim(), type: form.type, value: Number(form.value) || 0, status: "New lead", lastContact: "Just now", phone: form.phone.trim(), notes: form.notes.trim() }, ...current]);
+    setForm({ name: "", business: "", type: "Service", value: "", phone: "", notes: "" });
+    setShowModal(false);
+  }
+
+  function resetDemo() { setCustomers(seedCustomers); localStorage.removeItem("recover-customers"); }
 
   function markWon(id: number) {
     setCustomers((current) => current.map((c) => c.id === id ? { ...c, status: "Won" } : c));
@@ -199,11 +215,18 @@ export default function Home() {
 
       {showModal && (
         <div className="modal-backdrop" onClick={() => setShowModal(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-head"><div><p className="eyebrow">Quick add</p><h2>Add a customer</h2></div><button className="close" onClick={() => setShowModal(false)}>×</button></div>
-            <p className="muted">The first MVP uses local demo data. Database persistence comes next.</p>
-            <button className="primary full" onClick={() => { setShowModal(false); alert("Customer form is the next MVP module."); }}>Continue</button>
-          </div>
+          <form className="modal" onSubmit={addCustomer} onClick={(e) => e.stopPropagation()}>
+            <div className="modal-head"><div><p className="eyebrow">Quick add</p><h2>Add a customer</h2></div><button type="button" className="close" onClick={() => setShowModal(false)}>×</button></div>
+            <div className="form-grid">
+              <label>Name<input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Customer name" /></label>
+              <label>Business<input required value={form.business} onChange={(e) => setForm({ ...form, business: e.target.value })} placeholder="Business name" /></label>
+              <label>Type<select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value as Customer["type"] })}><option>Restaurant</option><option>Service</option><option>Beauty</option><option>Other</option></select></label>
+              <label>Potential value (€)<input type="number" min="0" value={form.value} onChange={(e) => setForm({ ...form, value: e.target.value })} placeholder="250" /></label>
+              <label>WhatsApp / phone<input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="+351..." /></label>
+              <label>Notes<input value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} placeholder="Quote, booking, request..." /></label>
+            </div>
+            <button className="primary full" type="submit">Create customer</button>
+          </form>
         </div>
       )}
     </main>
